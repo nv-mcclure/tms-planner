@@ -1,4 +1,7 @@
 #!/bin/bash
+
+# Copyright 2025 NVIDIA Corporation. All rights reserved.
+# Licensed under the Apache License, Version 2.0
 # Script to push the TMS Planner to GitHub
 
 # Change to the project directory

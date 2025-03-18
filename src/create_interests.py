@@ -1,3 +1,5 @@
+# Copyright 2025 NVIDIA Corporation. All rights reserved.
+# Licensed under the Apache License, Version 2.0
 #!/usr/bin/env python3
 # create_interests.py
 # Interactive helper script to create custom interest profiles for TMS planner
