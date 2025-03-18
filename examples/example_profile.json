@@ -1,0 +1,34 @@
+{
+  "interests": {
+    "Battery Materials": [
+      "battery",
+      "lithium",
+      "cathode",
+      "anode",
+      "electrolyte",
+      "energy storage",
+      "solid-state"
+    ],
+    "Characterization": [
+      "XRD",
+      "XPS",
+      "TEM",
+      "SEM",
+      "spectroscopy",
+      "in-situ",
+      "operando"
+    ],
+    "Manufacturing": [
+      "coating",
+      "roll-to-roll",
+      "scale-up",
+      "production",
+      "synthesis"
+    ]
+  },
+  "weights": {
+    "Battery Materials": 2.0,
+    "Characterization": 1.2,
+    "Manufacturing": 1.0
+  }
+}
