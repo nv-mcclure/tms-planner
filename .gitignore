@@ -43,6 +43,11 @@ venv.bak/
 # Comment the next line if you want to include HTML files in git
 # *.html
 
+# Allow specific PNG files for visualization examples
+!docs/images/*.png
+!examples/*_calendar.png
+!examples/*_calendar_symposium.png
+
 # Don't ignore JSON profile files
 !*_profile.json
 !example_profile.json
