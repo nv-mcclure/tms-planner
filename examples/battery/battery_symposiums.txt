@@ -1,0 +1,125 @@
+TMS 2025 SYMPOSIUM RECOMMENDATIONS
+Based on battery interests
+Minimum score: 5
+
+TOP RECOMMENDED SYMPOSIUMS:
+--------------------------
+
+1. 2D Materials – Preparation, Properties, Modeling & Applications
+   Average relevance score: 6.33
+   Number of relevant sessions: 3
+   Matching focus areas:
+     - Battery Materials: 2 sessions
+     - Characterization: 3 sessions
+     - Manufacturing: 2 sessions
+   Rooms: Room - 362, Marquee Ballroom
+   Sessions by date:
+     - Monday, March 24: 2 sessions
+     - Wednesday, March 26: 1 sessions
+
+2. Advances in Surface Engineering VII
+   Average relevance score: 6.25
+   Number of relevant sessions: 4
+   Matching focus areas:
+     - Battery Materials: 4 sessions
+     - Characterization: 3 sessions
+     - Manufacturing: 4 sessions
+   Rooms: Room - 107, Marquee Ballroom
+   Sessions by date:
+     - Monday, March 24: 3 sessions
+     - Tuesday, March 25: 1 sessions
+
+3. Advances in Bcc-Superalloys
+   Average relevance score: 6.00
+   Number of relevant sessions: 1
+   Matching focus areas:
+     - Characterization: 1 sessions
+     - Manufacturing: 1 sessions
+   Rooms: Room - 102
+   Sessions by date:
+     - Tuesday, March 25: 1 sessions
+
+4. Advances in Ceramic Materials and Processing
+   Average relevance score: 6.00
+   Number of relevant sessions: 2
+   Matching focus areas:
+     - Battery Materials: 2 sessions
+     - Characterization: 1 sessions
+     - Manufacturing: 2 sessions
+   Rooms: Room - 106
+   Sessions by date:
+     - Monday, March 24: 1 sessions
+     - Tuesday, March 25: 1 sessions
+
+5. Energy Technologies and CO2 Management
+   Average relevance score: 6.00
+   Number of relevant sessions: 1
+   Matching focus areas:
+     - Characterization: 1 sessions
+     - Manufacturing: 1 sessions
+   Rooms: Room - 364
+   Sessions by date:
+     - Tuesday, March 25: 1 sessions
+
+6. Magnesium Technology 2025
+   Average relevance score: 6.00
+   Number of relevant sessions: 1
+   Matching focus areas:
+     - Battery Materials: 1 sessions
+     - Characterization: 1 sessions
+     - Manufacturing: 1 sessions
+   Rooms: Marquee Ballroom
+   Sessions by date:
+     - Tuesday, March 25: 1 sessions
+
+7. Advanced Materials for Energy Conversion and Storage 2025
+   Average relevance score: 5.83
+   Number of relevant sessions: 12
+   Matching focus areas:
+     - Battery Materials: 12 sessions
+     - Characterization: 10 sessions
+     - Manufacturing: 6 sessions
+   Rooms: Marquee Ballroom, Room - 356
+   Sessions by date:
+     - Monday, March 24: 4 sessions
+     - Tuesday, March 25: 4 sessions
+     - Wednesday, March 26: 4 sessions
+
+8. REWAS 2025: Sustainable End-of-Life Management and Recycling Solutions for Batteries, Wind Turbines, and Photovoltaics
+   Average relevance score: 5.43
+   Number of relevant sessions: 7
+   Matching focus areas:
+     - Battery Materials: 6 sessions
+     - Characterization: 6 sessions
+     - Manufacturing: 7 sessions
+   Rooms: Room - 117, Marquee Ballroom
+   Sessions by date:
+     - Monday, March 24: 6 sessions
+     - Tuesday, March 25: 1 sessions
+
+9. Thin Films and Coatings: Properties, Processing and Applications
+   Average relevance score: 5.33
+   Number of relevant sessions: 6
+   Matching focus areas:
+     - Battery Materials: 2 sessions
+     - Characterization: 6 sessions
+     - Manufacturing: 6 sessions
+   Rooms: Marquee Ballroom, Room - 101
+   Sessions by date:
+     - Monday, March 24: 4 sessions
+     - Wednesday, March 26: 1 sessions
+     - Thursday, March 27: 1 sessions
+
+10. Powder Materials Processing and Fundamental Understanding
+   Average relevance score: 5.25
+   Number of relevant sessions: 4
+   Matching focus areas:
+     - Battery Materials: 1 sessions
+     - Characterization: 4 sessions
+     - Manufacturing: 4 sessions
+   Rooms: Marquee Ballroom, Room - 105
+   Sessions by date:
+     - Monday, March 24: 1 sessions
+     - Wednesday, March 26: 2 sessions
+     - Thursday, March 27: 1 sessions
+

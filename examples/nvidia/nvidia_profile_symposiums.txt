@@ -1,0 +1,140 @@
+TMS 2025 SYMPOSIUM RECOMMENDATIONS
+Based on nvidia_profile interests
+Minimum score: 5
+
+TOP RECOMMENDED SYMPOSIUMS:
+--------------------------
+
+1. Artificial Intelligence Applications in Integrated Computational Materials Engineering
+   Average relevance score: 7.15
+   Number of relevant sessions: 47
+   Matching focus areas:
+     - AI & Deep Learning: 47 sessions
+     - Digital Twins & Simulation: 47 sessions
+     - Materials Science & Discovery: 47 sessions
+     - Imaging & Sensing: 7 sessions
+   Rooms: Room - 351, Marquee Ballroom
+   Sessions by date:
+     - Tuesday, March 25: 6 sessions
+     - Wednesday, March 26: 21 sessions
+     - Thursday, March 27: 20 sessions
+
+2. Characterization of Minerals, Metals and Materials 2025: In-Situ Characterization Techniques
+   Average relevance score: 7.00
+   Number of relevant sessions: 1
+   Matching focus areas:
+     - AI & Deep Learning: 1 sessions
+     - Digital Twins & Simulation: 1 sessions
+     - Imaging & Sensing: 1 sessions
+   Rooms: Room - 121
+   Sessions by date:
+     - Monday, March 24: 1 sessions
+
+3. Frontiers of Materials Award Symposium: Manufacturing Structural and Functional Materials with Complexity: Lessons from Nature
+   Average relevance score: 7.00
+   Number of relevant sessions: 1
+   Matching focus areas:
+     - AI & Deep Learning: 1 sessions
+     - Digital Twins & Simulation: 1 sessions
+     - Materials Science & Discovery: 1 sessions
+   Rooms: Room - 116
+   Sessions by date:
+     - Wednesday, March 26: 1 sessions
+
+4. Bridging Scale Gaps in Multiscale Materials Modeling in the Age of Artificial Intelligence
+   Average relevance score: 6.91
+   Number of relevant sessions: 54
+   Matching focus areas:
+     - AI & Deep Learning: 54 sessions
+     - Digital Twins & Simulation: 54 sessions
+     - Materials Science & Discovery: 54 sessions
+     - Imaging & Sensing: 4 sessions
+   Rooms: Room - 353, Marquee Ballroom
+   Sessions by date:
+     - Monday, March 24: 17 sessions
+     - Tuesday, March 25: 19 sessions
+     - Wednesday, March 26: 18 sessions
+
+5. Verification, Calibration, and Validation Approaches in Modeling the Mechanical Performance of Metallic Materials
+   Average relevance score: 6.38
+   Number of relevant sessions: 26
+   Matching focus areas:
+     - AI & Deep Learning: 25 sessions
+     - Digital Twins & Simulation: 26 sessions
+     - Materials Science & Discovery: 26 sessions
+     - Imaging & Sensing: 2 sessions
+   Rooms: Room - 354, Marquee Ballroom
+   Sessions by date:
+     - Monday, March 24: 15 sessions
+     - Tuesday, March 25: 11 sessions
+
+6. Algorithms Development in Materials Science and Engineering
+   Average relevance score: 6.36
+   Number of relevant sessions: 53
+   Matching focus areas:
+     - AI & Deep Learning: 52 sessions
+     - Digital Twins & Simulation: 53 sessions
+     - Materials Science & Discovery: 53 sessions
+     - Imaging & Sensing: 6 sessions
+   Rooms: Room - 319, Marquee Ballroom
+   Sessions by date:
+     - Monday, March 24: 15 sessions
+     - Tuesday, March 25: 10 sessions
+     - Wednesday, March 26: 17 sessions
+     - Thursday, March 27: 11 sessions
+
+7. AI/Data Informatics: Computational Model Development, Verification, Validation, and Uncertainty Quantification
+   Average relevance score: 6.36
+   Number of relevant sessions: 67
+   Matching focus areas:
+     - AI & Deep Learning: 67 sessions
+     - Digital Twins & Simulation: 67 sessions
+     - Materials Science & Discovery: 67 sessions
+     - Imaging & Sensing: 9 sessions
+   Rooms: Marquee Ballroom, Room - 320
+   Sessions by date:
+     - Monday, March 24: 14 sessions
+     - Tuesday, March 25: 28 sessions
+     - Wednesday, March 26: 16 sessions
+     - Thursday, March 27: 9 sessions
+
+8. Additive Manufacturing Keynote Session
+   Average relevance score: 6.00
+   Number of relevant sessions: 1
+   Matching focus areas:
+     - AI & Deep Learning: 1 sessions
+     - Digital Twins & Simulation: 1 sessions
+     - Imaging & Sensing: 1 sessions
+   Rooms: Room - 120
+   Sessions by date:
+     - Monday, March 24: 1 sessions
+
+9. Additive Manufacturing Modeling, Simulation and Machine Learning
+   Average relevance score: 6.00
+   Number of relevant sessions: 43
+   Matching focus areas:
+     - AI & Deep Learning: 43 sessions
+     - Digital Twins & Simulation: 43 sessions
+     - Materials Science & Discovery: 6 sessions
+     - Imaging & Sensing: 16 sessions
+   Rooms: Room - 311, Marquee Ballroom
+   Sessions by date:
+     - Tuesday, March 25: 20 sessions
+     - Wednesday, March 26: 14 sessions
+     - Thursday, March 27: 9 sessions
+
+10. Local Chemical Ordering and Its Impact on Mechanical Behaviors, Radiation Damage, and Corrosion
+   Average relevance score: 6.00
+   Number of relevant sessions: 23
+   Matching focus areas:
+     - AI & Deep Learning: 21 sessions
+     - Digital Twins & Simulation: 23 sessions
+     - Materials Science & Discovery: 23 sessions
+     - Imaging & Sensing: 12 sessions
+   Rooms: Room - 352, Room - 316
+   Sessions by date:
+     - Monday, March 24: 4 sessions
+     - Tuesday, March 25: 3 sessions
+     - Wednesday, March 26: 8 sessions
+     - Thursday, March 27: 8 sessions
+

@@ -1,17 +1,85 @@
 # TMS Planner Examples
 
-This directory contains example visualizations and data exports generated using the TMS Conference Planner. These examples demonstrate the different types of outputs the planner can generate for various research profiles.
+This directory contains example visualizations and data exports organized by research profile.
 
-## Available Examples
+## Directory Structure
 
-Each research profile has the following files:
+The examples are organized by research profile:
 
-- `*_calendar.html` - Interactive calendar visualization (standard view)
-- `*_calendar_symposiums.html` - Interactive calendar visualization (symposium view)
-- `*_calendar.png` - Static PNG version of the standard calendar view
-- `*_calendar_symposium.png` - Static PNG version of the symposium view
-- `*_sessions.csv` - CSV export of relevant sessions
-- `*_symposiums.txt` - Text report of top recommended symposiums
+- [Battery Research](./battery/) - Battery materials, characterization, and manufacturing
+- [Machine Learning](./ml/) - Machine learning, data science, and AI applications
+- [Additive Manufacturing](./am/) - AM processes, materials, and characterization
+- [Quantum Methods](./quantum/) - Quantum computing, DFT, and computational materials
+- [Corrosion Science](./corrosion/) - Corrosion phenomena and resistant materials
+- [NVIDIA Profile](./nvidia/) - Custom profile for NVIDIA-related research
+
+## Available Example Types
+
+Each profile directory contains:
+
+- **Interactive Visualizations**
+  - `*_calendar.html` - Standard view (individual sessions)
+  - `*_calendar_symposium.html` - Symposium-grouped view
+
+- **Static Visualizations**
+  - `*_calendar.png` - PNG export of standard view
+  - `*_calendar_symposium.png` - PNG export of symposium view
+
+- **Data Exports**
+  - `*_sessions.csv` - CSV export of relevant sessions
+  - `*_symposiums.txt` - Report of recommended symposiums
+
+## Using the Examples
+
+### Viewing Interactive Visualizations
+
+The HTML files provide the richest experience with:
+- Interactive hover details
+- Clickable legend for filtering
+- Time period filtering
+- Responsive layout
+
+To view the interactive HTML visualizations:
+1. Clone this repository
+2. Open any HTML file in your web browser
+3. For viewing on GitHub, use a service like [htmlpreview.github.io](https://htmlpreview.github.io/)
+
+### Including Static Visualizations
+
+The PNG files are useful for:
+- Including in presentations
+- Embedding in documents
+- Viewing without a web browser
+
+## Creating Your Own Examples
+
+See the [Example Usage Guide](./example_usage.md) for detailed instructions on how to:
+- Generate your own visualizations
+- Create custom profiles
+- Export data in various formats
+
+## Fixing PNG Generation Issues
+
+If you encounter issues with PNG file generation:
+
+1. Install or update the Kaleido package: 
+   ```bash
+   pip3 install -U kaleido
+   ```
+
+2. Regenerate all PNG files:
+   ```bash
+   ./fix_pngs.sh
+   ```
+
+## The NVIDIA Custom Profile Example
+
+The NVIDIA example demonstrates how to create a custom profile with:
+- Multiple research areas with specific keywords
+- Custom weighting for different areas
+- Comprehensive visualization of multiple focus areas
+
+You can use it as a template for creating your own custom profiles that align with your research interests.
 
 ## Static vs. Interactive Visualizations
 
