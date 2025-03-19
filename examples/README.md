@@ -8,8 +8,29 @@ Each research profile has the following files:
 
 - `*_calendar.html` - Interactive calendar visualization (standard view)
 - `*_calendar_symposiums.html` - Interactive calendar visualization (symposium view)
+- `*_calendar.png` - Static PNG version of the standard calendar view
+- `*_calendar_symposium.png` - Static PNG version of the symposium view
 - `*_sessions.csv` - CSV export of relevant sessions
 - `*_symposiums.txt` - Text report of top recommended symposiums
+
+## Static vs. Interactive Visualizations
+
+This directory contains two types of visualizations:
+
+1. **HTML Files** (Interactive): These provide the richest experience with interactive features like hovering for details, filtering by clicking legend items, and zooming controls.
+
+2. **PNG Files** (Static): These are static image exports suitable for including in documents, presentations, or viewing without a web browser.
+
+### Viewing HTML Files on GitHub
+
+When viewing HTML files from this repository on GitHub:
+
+1. Use the "Raw" button to view the file directly
+2. Use a service like [htmlpreview.github.io](https://htmlpreview.github.io/) by prepending this URL:
+   ```
+   https://htmlpreview.github.io/?https://github.com/yourusername/tms-planner/blob/main/examples/battery_calendar.html
+   ```
+3. Clone the repository locally and open the HTML files in your browser
 
 ## Standard Profiles
 
@@ -79,6 +100,30 @@ To view the interactive visualizations, open any of the HTML files in a web brow
 - Filter sessions by clicking on legend items
 - Hover over sessions for detailed information
 - Zoom in on specific time periods using the buttons at the top
+
+## Troubleshooting PNG Generation
+
+If you encounter issues with PNG file generation:
+
+1. **Install or Update Kaleido**: The Plotly PNG export functionality requires the Kaleido package:
+   ```bash
+   pip3 install -U kaleido
+   ```
+
+2. **Fix Corrupted PNGs**: If your PNG files appear to be corrupted, you can regenerate them using:
+   ```bash
+   ./fix_pngs.sh
+   ```
+   
+3. **Memory Issues**: If you encounter memory errors with large visualizations, try:
+   - Increasing the minimum score to reduce the number of sessions
+   - Generating only one visualization at a time
+   - Restarting your system to free up memory
+
+4. **Alternative Approach**: If PNG generation continues to fail, you can:
+   - Use the interactive HTML visualizations instead
+   - Take screenshots of the HTML visualizations
+   - Use browser print/save functionality to create PDFs
 
 ## Generating Your Own Examples
 
