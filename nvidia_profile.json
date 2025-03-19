@@ -1,0 +1,38 @@
+{
+  "interests": {
+    "AI & Deep Learning": [
+      "deep learning", 
+      "neural network", 
+      "AI", 
+      "machine learning", 
+      "data mining", 
+      "artificial intelligence",
+      "GPU", 
+      "tensor cores", 
+      "CUDA"
+    ],
+    "Digital Twins & Simulation": [
+      "simulation", 
+      "modeling", 
+      "digital twin", 
+      "prediction", 
+      "CAE", 
+      "computational",
+      "omniverse",
+      "physics-based"
+    ],
+    "Materials Science & Discovery": [
+      "materials discovery", 
+      "high-throughput", 
+      "materials design", 
+      "property prediction",
+      "atomic scale",
+      "computational materials"
+    ]
+  },
+  "weights": {
+    "AI & Deep Learning": 2.0,
+    "Digital Twins & Simulation": 1.5,
+    "Materials Science & Discovery": 1.7
+  }
+} 

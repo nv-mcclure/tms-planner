@@ -1,4 +1,4 @@
-# Byte-compiled / optimized / DLL files
+# Python bytecode
 __pycache__/
 *.py[cod]
 *$py.class
@@ -21,10 +21,10 @@ wheels/
 .installed.cfg
 *.egg
 
-# Jupyter Notebook
+# Jupyter notebooks
 .ipynb_checkpoints
 
-# Environments
+# Virtual environments
 .env
 .venv
 env/
@@ -33,15 +33,33 @@ ENV/
 env.bak/
 venv.bak/
 
+# Data files that might be large
+# Uncomment if you don't want to include the data file in the repo
+# data/*.xlsx
+
+# Generated output files
+*.png
+*.csv
+# Comment the next line if you want to include HTML files in git
+# *.html
+
+# Don't ignore JSON profile files
+!*_profile.json
+!example_profile.json
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
 # IDE files
 .idea/
 .vscode/
 *.swp
 *.swo
 
-# OS specific files
-.DS_Store
-Thumbs.db
+# Generated test outputs
+test_output.html
+test_calendar.html
 
 # Excel data files
 *.xlsx

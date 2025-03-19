@@ -193,13 +193,19 @@ def identify_nvidia_product_relevance(session_text):
     """Identify which NVIDIA products are relevant to a session."""
     nvidia_products = {
         'Omniverse': ['digital twin', 'visualization', 'collaboration', 'simulation', 'real-time', 
-                      '3D modeling', 'virtual environment'],
-        'Holoscan': ['monitoring', 'real-time', 'quality control', 'vision system', 'defect detection',
-                    'sensor', 'camera', 'imaging'],
+                      '3D modeling', 'virtual environment', 'synthetic data', 'virtual worlds'],
+        'AI & HPC': ['GPU', 'accelerator', 'CUDA', 'parallel computing', 'high performance computing',
+                    'machine learning', 'deep learning', 'neural network', 'AI', 'transformer', 
+                    'large language model', 'generative AI', 'computer vision'],
         'ALCHEMI': ['materials discovery', 'optimization', 'parameter prediction', 'materials design',
-                   'quantum chemistry', 'simulation'],
-        'BioNeMo': ['knowledge graph', 'data extraction', 'literature', 'automated analysis',
-                   'natural language processing', 'information extraction']
+                   'quantum chemistry', 'simulation', 'material informatics', 'computational materials',
+                   'materials genomics', 'high-throughput'],
+        'Modulus': ['physics-informed', 'physics-ML', 'differential equations', 'surrogate model',
+                   'physics simulation', 'digital twin', 'multiphysics', 'CFD', 'structural mechanics'],
+        'MONAI': ['medical imaging', 'healthcare', 'AI for healthcare', 'medical data',
+                 'radiology', 'image segmentation', 'computer vision', 'federated learning'],
+        'DOCA': ['data processing', 'networking', 'DPU', 'BlueField', 'data center', 'accelerated computing',
+                'infrastructure', 'security', 'storage']
     }
     
     relevant_products = {}
@@ -903,12 +909,32 @@ def visualize_schedule_calendar(df, min_score=0, focus_areas=None, title="Confer
     if n_days == 1:
         axes = [axes]
     
-    # Reference date for plotting times on the y-axis (using today's date)
-    ref_date = datetime.now().date()
+    # Time to float conversion function - Convert HH:MM to hours as float
+    def time_to_float(time_str):
+        try:
+            if isinstance(time_str, str):
+                # Handle different time formats
+                if ':' in time_str:
+                    hours, minutes = map(int, time_str.split(':'))
+                else:
+                    # Try to handle other formats or set default
+                    print(f"Warning: Unexpected time format: {time_str}, using default")
+                    return 12.0  # Default to noon
+                
+                return hours + minutes / 60.0
+            elif hasattr(time_str, 'hour') and hasattr(time_str, 'minute'):
+                # Handle time objects
+                return time_str.hour + time_str.minute / 60.0
+            else:
+                print(f"Warning: Unknown time format: {time_str}, using default")
+                return 12.0  # Default to noon
+        except Exception as e:
+            print(f"Error parsing time '{time_str}': {e}")
+            return 12.0  # Default to noon
     
-    # Set y-axis limits (time range)
-    time_min = datetime.combine(ref_date, datetime.strptime('07:00', '%H:%M').time())
-    time_max = datetime.combine(ref_date, datetime.strptime('19:00', '%H:%M').time())
+    # Set y-axis limits (time range in hours)
+    time_min = 7.0  # 7:00 AM
+    time_max = 19.0  # 7:00 PM
     
     # Process each day
     for i, date in enumerate(unique_dates):
@@ -920,11 +946,12 @@ def visualize_schedule_calendar(df, min_score=0, focus_areas=None, title="Confer
         ax.set_title(f"{day_name}\n{date_str}")
         
         # Configure y-axis (time)
-        hours = mdates.HourLocator(interval=1)
-        hour_fmt = mdates.DateFormatter('%H:%M')
-        ax.yaxis.set_major_locator(hours)
-        ax.yaxis.set_major_formatter(hour_fmt)
         ax.set_ylim(time_max, time_min)  # Reversed for top-to-bottom
+        
+        # Set y-axis ticks at each hour
+        hour_ticks = list(range(int(time_min), int(time_max) + 1))
+        ax.set_yticks(hour_ticks)
+        ax.set_yticklabels([f"{h:02d}:00" for h in hour_ticks])
         
         # Configure x-axis (rooms)
         day_data = df[df['Date'].dt.date == date]
@@ -951,83 +978,88 @@ def visualize_schedule_calendar(df, min_score=0, focus_areas=None, title="Confer
             room_sessions = day_data[day_data['Location'] == room]
             
             for _, session in room_sessions.iterrows():
-                # Parse start and end times and combine with reference date
                 try:
-                    # Handle both string and datetime.time objects
-                    if isinstance(session['Start'], str):
-                        start_time = datetime.combine(ref_date, datetime.strptime(session['Start'], '%H:%M').time())
-                        end_time = datetime.combine(ref_date, datetime.strptime(session['End'], '%H:%M').time())
-                    else:
-                        start_time = datetime.combine(ref_date, session['Start'])
-                        end_time = datetime.combine(ref_date, session['End'])
-                except (ValueError, TypeError) as e:
-                    print(f"Error parsing time: {e} - Start: {session['Start']}, End: {session['End']}")
-                    continue  # Skip this session
-                
-                # Calculate duration in hours
-                duration = (end_time - start_time).total_seconds() / 3600
-                
-                # Create rectangle properties
-                rect_x = room_idx - 0.4
-                rect_width = 0.8
-                rect_y = end_time  # Bottom of rectangle (y-axis is reversed)
-                rect_height = duration
-                
-                # Determine color based on focus areas
-                if focus_areas:
-                    session_text = ' '.join([str(val) for val in session.values if isinstance(val, str)])
-                    matching_areas = []
-                    for area, keywords in focus_areas.items():
-                        if any(keyword.lower() in session_text.lower() for keyword in keywords):
-                            matching_areas.append(area)
+                    # Convert start and end times to float (hours)
+                    start_float = time_to_float(session['Start'])
+                    end_float = time_to_float(session['End'])
                     
-                    if matching_areas:
-                        # Use color of the first matching area
-                        primary_area = matching_areas[0]
-                        color = focus_area_colors[primary_area]
-                        alpha = min(0.4 + 0.1 * session['relevance_score'], 0.9)  # Higher score = more opaque
+                    # Calculate duration
+                    duration = end_float - start_float
+                    
+                    # Skip if invalid duration
+                    if duration <= 0:
+                        print(f"Warning: Invalid duration for session {session['Title']}: {duration}")
+                        # Use a minimum duration to make the session visible
+                        duration = 0.25  # 15 minutes minimum
+                    
+                    # Create rectangle properties
+                    rect_x = room_idx - 0.4
+                    rect_width = 0.8
+                    
+                    # Since the y-axis is reversed (time_max at the top),
+                    # the rectangle's y position should be at end_float (the bottom)
+                    rect_y = end_float
+                    rect_height = -duration  # Negative height since we're drawing upward in a reversed axis
+                    
+                    # Determine color based on focus areas
+                    if focus_areas:
+                        session_text = ' '.join([str(val) for val in session.values if isinstance(val, str)])
+                        matching_areas = []
+                        for area, keywords in focus_areas.items():
+                            if any(keyword.lower() in session_text.lower() for keyword in keywords):
+                                matching_areas.append(area)
                         
-                        # Add to legend if not already seen
-                        if primary_area not in seen_areas:
-                            seen_areas.add(primary_area)
-                            patch = mpatches.Patch(color=color, alpha=alpha, label=primary_area)
-                            legend_handles.append(patch)
+                        if matching_areas:
+                            # Use color of the first matching area
+                            primary_area = matching_areas[0]
+                            color = focus_area_colors[primary_area]
+                            alpha = min(0.4 + 0.1 * session['relevance_score'], 0.9)  # Higher score = more opaque
+                            
+                            # Add to legend if not already seen
+                            if primary_area not in seen_areas:
+                                seen_areas.add(primary_area)
+                                patch = mpatches.Patch(color=color, alpha=alpha, label=primary_area)
+                                legend_handles.append(patch)
+                        else:
+                            color = 'gray'
+                            alpha = 0.3
                     else:
-                        color = 'gray'
-                        alpha = 0.3
-                else:
-                    color = 'steelblue'
-                    alpha = 0.7
-                
-                # Create rectangle
-                rect = plt.Rectangle(
-                    (rect_x, rect_y), rect_width, rect_height,
-                    facecolor=color, alpha=alpha, edgecolor='black', linewidth=1
-                )
-                ax.add_patch(rect)
-                
-                # Add session title text
-                title_text = session['Title']
-                if len(title_text) > 30:
-                    title_text = title_text[:27] + '...'
-                
-                # Add score if focus areas provided
-                if focus_areas:
-                    title_text += f" ({session['relevance_score']})"
-                
-                # Position the text in the middle of the rectangle
-                text_y = start_time + timedelta(hours=duration/2)
-                
-                ax.text(
-                    rect_x + rect_width/2, 
-                    text_y,
-                    title_text,
-                    horizontalalignment='center',
-                    verticalalignment='center',
-                    fontsize=8,
-                    color='black',
-                    wrap=True
-                )
+                        color = 'steelblue'
+                        alpha = 0.7
+                    
+                    # Create rectangle
+                    rect = plt.Rectangle(
+                        (rect_x, rect_y), rect_width, rect_height,
+                        facecolor=color, alpha=alpha, edgecolor='black', linewidth=1
+                    )
+                    ax.add_patch(rect)
+                    
+                    # Add session title text
+                    title_text = session['Title']
+                    if len(title_text) > 30:
+                        title_text = title_text[:27] + '...'
+                    
+                    # Add score if focus areas provided
+                    if focus_areas:
+                        title_text += f" ({session['relevance_score']})"
+                    
+                    # Position the text in the middle of the rectangle
+                    # With the reversed y-axis and negative height, we need to position from the bottom up
+                    text_y = rect_y - rect_height/2
+                    
+                    ax.text(
+                        rect_x + rect_width/2, 
+                        text_y,
+                        title_text,
+                        horizontalalignment='center',
+                        verticalalignment='center',
+                        fontsize=8,
+                        color='black',
+                        wrap=True
+                    )
+                except (ValueError, TypeError) as e:
+                    print(f"Error processing session: {e} - Start: {session['Start']}, End: {session['End']}")
+                    continue  # Skip this session
     
     # Add legend if using focus areas
     if focus_areas and legend_handles:
@@ -1040,9 +1072,6 @@ def visualize_schedule_calendar(df, min_score=0, focus_areas=None, title="Confer
     
     # Add overall title
     fig.suptitle(title, fontsize=16, y=0.98)
-    
-    # Show the plot
-    plt.show()
     
     return fig
 

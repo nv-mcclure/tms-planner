@@ -1,32 +1,98 @@
-# TMS Planner Example Profiles
+# TMS Planner Examples
 
-This directory contains example interest profiles that can be used with the TMS Planner tool.
+This directory contains example visualizations and data exports generated using the TMS Conference Planner. These examples demonstrate the different types of outputs the planner can generate for various research profiles.
 
 ## Available Examples
 
-- **example_profile.json**: A sample profile focused on battery materials research
-  - Includes interests in battery materials, characterization techniques, and manufacturing processes
-  - Uses weighted preferences to prioritize certain categories
+Each research profile has the following files:
 
-## Using Example Profiles
+- `*_calendar.html` - Interactive calendar visualization (standard view)
+- `*_calendar_symposiums.html` - Interactive calendar visualization (symposium view)
+- `*_sessions.csv` - CSV export of relevant sessions
+- `*_symposiums.txt` - Text report of top recommended symposiums
 
-You can use any example profile with the TMS Planner by running:
+## Standard Profiles
 
-```bash
-python src/tms_planner.py --interests examples/example_profile.json
+The following standard research profiles are included:
+
+- `battery` - Battery materials and characterization
+- `ml` - Machine learning and AI in materials science
+- `am` - Additive manufacturing
+- `quantum` - Quantum computing and DFT simulations
+- `corrosion` - Corrosion science and prevention
+
+## Custom Profile Example
+
+The `nvidia` example demonstrates how to create a custom profile. To create your own custom profile:
+
+1. Create a JSON file similar to `nvidia_profile.json` in the root directory
+2. Define your interests and weights in the JSON file
+3. Run the planner with `--interests your_profile.json`
+
+### NVIDIA Profile Structure
+
+```json
+{
+  "interests": {
+    "AI & Deep Learning": [
+      "deep learning", 
+      "neural network", 
+      "AI", 
+      "machine learning", 
+      "data mining", 
+      "artificial intelligence",
+      "GPU", 
+      "tensor cores", 
+      "CUDA"
+    ],
+    "Digital Twins & Simulation": [
+      "simulation", 
+      "modeling", 
+      "digital twin", 
+      "prediction", 
+      "CAE", 
+      "computational",
+      "omniverse",
+      "physics-based"
+    ],
+    "Materials Science & Discovery": [
+      "materials discovery", 
+      "high-throughput", 
+      "materials design", 
+      "property prediction",
+      "atomic scale",
+      "computational materials"
+    ]
+  },
+  "weights": {
+    "AI & Deep Learning": 2.0,
+    "Digital Twins & Simulation": 1.5,
+    "Materials Science & Discovery": 1.7
+  }
+}
 ```
 
-## Creating Your Own Profiles
+## Viewing Examples
 
-The easiest way to create your own profile is to use the interactive helper:
+To view the interactive visualizations, open any of the HTML files in a web browser. The visualizations allow you to:
+
+- Filter sessions by clicking on legend items
+- Hover over sessions for detailed information
+- Zoom in on specific time periods using the buttons at the top
+
+## Generating Your Own Examples
+
+You can generate your own examples by running:
 
 ```bash
-python src/create_interests.py
+# Using a predefined profile
+python3 src/plotly_viz.py --profile battery --min-score 5 --output my_calendar.html
+
+# Using a custom profile
+python3 src/plotly_viz.py --interests my_profile.json --min-score 5 --output my_calendar.html
 ```
 
-This will guide you through the process of defining research interests and will save the profile as a JSON file.
-
-Alternatively, you can copy and modify any example profile to suit your needs.
+Or use the `generate_all_examples.sh` script to generate visualizations for all profiles at once.
 
 # TMS Conference Planner Examples
 
