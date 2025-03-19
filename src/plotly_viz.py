@@ -242,7 +242,7 @@ def create_interactive_calendar(df, min_score=0, focus_areas=None, title="Confer
     title : str
         Title for the visualization
     symposium_view : bool
-        If True, group sessions by symposium instead of showing all individual sessions
+        If True, group sessions by symposium instead of showing individual sessions
     selected_areas : list
         List of specific focus areas to display (if None, show all)
         
@@ -404,7 +404,7 @@ def create_interactive_calendar(df, min_score=0, focus_areas=None, title="Confer
                         name = matching_areas[0]
                     
                     # Create a wider rectangle for the symposium block with better spacing
-                    rect_x = [room_pos - 0.4, room_pos + 0.4, room_pos + 0.4, room_pos - 0.4, room_pos - 0.4]
+                    rect_x = [room_pos - 0.45, room_pos + 0.45, room_pos + 0.45, room_pos - 0.45, room_pos - 0.45]
                     rect_y = [min_start, min_start, max_end, max_end, min_start]
                     
                     # Count sessions and get avg score
@@ -591,7 +591,6 @@ def create_interactive_calendar(df, min_score=0, focus_areas=None, title="Confer
                                     text=hover_text,
                                     name=area_name,
                                     showlegend=bool(legend_trace),
-                                    legendgroup=area_name,
                                     # Fix for legend showing half-colored items
                                     marker=dict(color=color) if legend_trace else dict(),
                                 ),
@@ -742,6 +741,63 @@ def create_interactive_calendar(df, min_score=0, focus_areas=None, title="Confer
                             print(f"Error processing session: {e}")
                             continue
     
+    # Final layout adjustments
+    fig.update_layout(
+        title={
+            'text': title,
+            'x': 0.5,
+            'xanchor': 'center',
+            'font': {'size': 24}  # Larger title font
+        },
+        height=800,  # Taller figure for better spacing
+        legend={
+            'font': {'size': 14},  # Larger legend font
+            'yanchor': 'top',
+            'y': 0.99,  # Position legend at top
+            'xanchor': 'right',
+            'x': 0.99,  # Position legend at right
+            'bgcolor': 'rgba(255,255,255,0.8)'  # Semi-transparent background
+        },
+        margin={'t': 80, 'b': 50, 'l': 50, 'r': 150},  # Increase right margin for legend
+    )
+
+    # Increase size and spacing of axis labels and room labels
+    fig.update_xaxes(
+        tickfont={'size': 14},  # Larger tick font
+        title_font={'size': 16}  # Larger axis title font
+    )
+    
+    fig.update_yaxes(
+        tickfont={'size': 14},
+        title_font={'size': 16}
+    )
+    
+    # Annotate room numbers with larger, more visible text
+    for day_idx, date in enumerate(unique_dates):
+        day_data = df[df['Date'].dt.date == date]
+        if day_data.empty:
+            continue
+            
+        # Get unique rooms for this day
+        unique_rooms = sorted(day_data['Location'].unique())
+        
+        # Add room labels at top of columns
+        for i, room in enumerate(unique_rooms):
+            fig.add_annotation(
+                x=i,
+                y=time_min - 0.25,  # Position just above the top of the chart
+                text=f"Room {room}",
+                showarrow=False,
+                font={'size': 14, 'color': 'black'},
+                xref=f'x{day_idx+1}',
+                yref=f'y{day_idx+1}',
+                bgcolor='rgba(240,240,240,0.7)',  # Light gray background
+                bordercolor='rgba(0,0,0,0.5)',
+                borderwidth=1,
+                borderpad=4,
+                opacity=0.9
+            )
+    
     # Configure layout
     fig.update_layout(
         title=dict(
@@ -846,9 +902,53 @@ def create_interactive_calendar(df, min_score=0, focus_areas=None, title="Confer
     
     return fig
 
+def export_fig_as_png(fig, output_file, width=2400, height=1600):
+    """
+    Export a Plotly figure as a PNG file using kaleido.
+    
+    Parameters:
+    -----------
+    fig : plotly.graph_objects.Figure
+        The Plotly figure to export
+    output_file : str
+        Path to save the PNG file
+    width : int
+        Width of the output image in pixels
+    height : int
+        Height of the output image in pixels
+    
+    Returns:
+    --------
+    bool
+        True if successful, False otherwise
+    """
+    try:
+        # Check if kaleido is installed
+        import plotly.io as pio
+        
+        # Remove .html extension if present and add .png
+        if output_file.lower().endswith('.html'):
+            output_file = output_file[:-5] + '.png'
+        elif not output_file.lower().endswith('.png'):
+            output_file = output_file + '.png'
+        
+        print(f"Exporting visualization to PNG: {output_file}")
+        
+        # Export to PNG with higher resolution
+        fig.write_image(output_file, width=width, height=height, scale=2)
+        print(f"Successfully exported to {output_file}")
+        return True
+    except ImportError:
+        print("Error: The kaleido package is required for PNG export.")
+        print("Please install it with: pip install -U kaleido")
+        return False
+    except Exception as e:
+        print(f"Error exporting to PNG: {e}")
+        return False
+
 def save_interactive_calendar(df=None, data_file=None, profile=None, interests_file=None, 
                             min_score=3, output_file=None, title=None, gen_csv=False, gen_symposium=False,
-                            symposium_view=False, selected_areas=None):
+                            symposium_view=False, selected_areas=None, export_png=False):
     """
     Generate and save an interactive calendar visualization of the conference schedule.
     
@@ -876,6 +976,8 @@ def save_interactive_calendar(df=None, data_file=None, profile=None, interests_f
         If True, group sessions by symposium instead of showing individual sessions (default: False)
     selected_areas : list, optional
         List of specific focus areas to display (default: None, show all)
+    export_png : bool
+        Whether to export the figure as a PNG file in addition to HTML (default: False)
     
     Returns:
     --------
@@ -1018,6 +1120,11 @@ def save_interactive_calendar(df=None, data_file=None, profile=None, interests_f
         pio.write_html(fig, output_file, auto_open=False)
         print(f"Successfully saved to {output_file}")
         
+        # Export to PNG if requested
+        if export_png:
+            png_file = output_file.replace('.html', '.png')
+            export_fig_as_png(fig, png_file)
+        
         return True
     
     except Exception as e:
@@ -1056,6 +1163,8 @@ def main():
                       help="Group sessions by symposium in the visualization")
     parser.add_argument("--areas", nargs="+", 
                       help="Specific focus areas to display (space-separated)")
+    parser.add_argument("--export-png", action="store_true",
+                      help="Export as PNG in addition to HTML (requires kaleido package)")
     
     args = parser.parse_args()
     
@@ -1070,7 +1179,8 @@ def main():
         gen_csv=args.csv,
         gen_symposium=args.symposium,
         symposium_view=args.symposium_view,
-        selected_areas=args.areas
+        selected_areas=args.areas,
+        export_png=args.export_png
     )
     
     # Open the visualization if requested

@@ -17,14 +17,23 @@ do
   echo
   echo "=== Generating visualization for ${profile} profile ==="
   
-  # Generate with CSV and symposium reports
-  echo "Creating standard calendar view..."
+  # Generate HTML visualizations
+  echo "Creating standard calendar view (HTML)..."
   python3 src/plotly_viz.py --profile ${profile} --min-score ${min_score} \
     --output examples/${profile}_calendar.html --csv --symposium
   
-  echo "Creating symposium view..."
+  echo "Creating symposium view (HTML)..."
   python3 src/plotly_viz.py --profile ${profile} --min-score ${min_score} \
     --output examples/${profile}_calendar_symposiums.html --symposium-view
+  
+  # Generate PNG visualization (if needed)
+  if command -v kaleido >/dev/null 2>&1 || python3 -c "import kaleido" >/dev/null 2>&1; then
+    echo "Creating PNG visualization..."
+    python3 src/save_calendar.py --profile ${profile} --min-score ${min_score} \
+      --output examples/${profile}_calendar.png
+  else
+    echo "Skipping PNG generation (kaleido package not found)"
+  fi
   
   # Move CSV and txt files to examples directory
   if [ -f "${profile}_sessions.csv" ]; then
@@ -42,14 +51,23 @@ do
   echo
   echo "=== Generating visualization for ${profile} profile ==="
   
-  # Generate with CSV and symposium reports
-  echo "Creating standard calendar view..."
+  # Generate HTML visualizations
+  echo "Creating standard calendar view (HTML)..."
   python3 src/plotly_viz.py --interests ${profile}_profile.json --min-score ${min_score} \
     --output examples/${profile}_calendar.html --csv --symposium
   
-  echo "Creating symposium view..."
+  echo "Creating symposium view (HTML)..."
   python3 src/plotly_viz.py --interests ${profile}_profile.json --min-score ${min_score} \
     --output examples/${profile}_calendar_symposiums.html --symposium-view
+  
+  # Generate PNG visualization (if needed)
+  if command -v kaleido >/dev/null 2>&1 || python3 -c "import kaleido" >/dev/null 2>&1; then
+    echo "Creating PNG visualization..."
+    python3 src/save_calendar.py --interests ${profile}_profile.json --min-score ${min_score} \
+      --output examples/${profile}_calendar.png
+  else
+    echo "Skipping PNG generation (kaleido package not found)"
+  fi
   
   # Move CSV and txt files to examples directory
   if [ -f "${profile}_profile_sessions.csv" ]; then
@@ -63,4 +81,8 @@ done
 
 echo
 echo "All visualizations generated in the 'examples' directory."
-ls -la examples/ 
+ls -la examples/
+
+echo
+echo "To view the HTML visualizations, open any of the .html files in your web browser."
+echo "Example: firefox examples/battery_calendar.html" 
