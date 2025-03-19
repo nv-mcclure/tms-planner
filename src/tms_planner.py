@@ -8,7 +8,9 @@ import argparse
 import json
 import pandas as pd
 import numpy as np
-from analyze_tms import load_conference_data, user_customized_featurizer
+import os
+import sys
+from analyze_tms import load_conference_data, user_customized_featurizer, visualize_schedule_calendar, find_data_file
 
 # Pre-defined research profiles
 RESEARCH_PROFILES = {
@@ -122,8 +124,7 @@ def main():
     parser = argparse.ArgumentParser(description="Generate personalized TMS conference schedules")
     
     # Input file options
-    parser.add_argument("-f", "--file", default="TMS2025AI_Excel_02-21-2025.xlsx", 
-                      help="Path to the TMS Excel file (default: TMS2025AI_Excel_02-21-2025.xlsx)")
+    parser.add_argument("-f", "--file", help="Path to the TMS Excel file (auto-detected if not specified)")
     
     # Interests options
     interests_group = parser.add_argument_group("Interests options (choose one)")
@@ -135,10 +136,16 @@ def main():
                                help="Generate a template interests file at the specified path")
     
     # Additional options
-    parser.add_argument("-m", "--min-score", type=int, default=3,
-                      help="Minimum relevance score to include a session (default: 3)")
+    parser.add_argument("-m", "--min-score", type=int, default=5,
+                      help="Minimum relevance score to include a session (default: 5)")
     parser.add_argument("-l", "--list-profiles", action="store_true",
                       help="List available pre-defined profiles")
+    parser.add_argument("-c", "--calendar", action="store_true", default=False,
+                      help="Show calendar visualization (default: disabled)")
+    parser.add_argument("-n", "--no-calendar", action="store_true",
+                      help="Disable calendar visualization")
+    parser.add_argument("-o", "--output", 
+                      help="Save the calendar visualization to an image file (PNG format)")
     
     args = parser.parse_args()
     
@@ -163,12 +170,20 @@ def main():
         parser.print_help()
         return
     
+    # Determine file path - use find_data_file if no path provided
+    file_path = args.file
+    if not file_path:
+        file_path = find_data_file("TMS2025AI_Excel_02-21-2025.xlsx")
+        if not file_path:
+            print("Error: Could not find the Excel file. Please provide the file path with --file option.")
+            return
+    
     # Load conference data
     print("Loading TMS conference data...")
-    df = load_conference_data(args.file)
+    df = load_conference_data(file_path)
     
     if df is None:
-        print(f"Error: Could not load conference data from {args.file}")
+        print(f"Error: Could not load conference data from {file_path}")
         return
     
     # Get interests and weights
@@ -181,8 +196,22 @@ def main():
         interests = profile_data["interests"]
         weights = profile_data["weights"]
     
+    # Determine whether to show calendar
+    show_calendar = args.calendar and not args.no_calendar
+    
     # Generate personalized schedule
-    user_customized_featurizer(df, interests, weights, min_score=args.min_score)
+    result_df = user_customized_featurizer(df, interests, weights, min_score=args.min_score, show_calendar=show_calendar)
+    
+    # Save visualization if requested
+    if args.output and show_calendar and result_df is not None and not result_df.empty:
+        import matplotlib.pyplot as plt
+        print(f"\nSaving calendar visualization to {args.output}...")
+        fig = visualize_schedule_calendar(result_df, min_score=args.min_score, focus_areas=interests, 
+                               title=f"Your Personalized TMS Schedule (min score: {args.min_score})")
+        if fig:
+            fig.savefig(args.output, dpi=300, bbox_inches='tight')
+            print(f"Calendar visualization saved to {args.output}")
+            plt.close(fig)
 
 if __name__ == "__main__":
     main() 

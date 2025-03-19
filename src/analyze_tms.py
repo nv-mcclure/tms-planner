@@ -4,12 +4,66 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from datetime import datetime
+from datetime import datetime, timedelta
+import matplotlib.dates as mdates
+import matplotlib.colors as mcolors
+import matplotlib.patches as mpatches
+import os
+import sys
 
 # Set style for better visualizations
 sns.set_theme(style="whitegrid")
 
+def find_data_file(filename='TMS2025AI_Excel_02-21-2025.xlsx'):
+    """
+    Find the data file by searching in multiple possible locations.
+    
+    Parameters:
+    -----------
+    filename : str
+        Name of the file to find (default: 'TMS2025AI_Excel_02-21-2025.xlsx')
+        
+    Returns:
+    --------
+    str or None
+        Path to the file if found, None otherwise
+    """
+    # Get the directory of the current script
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    # List of possible file locations to check
+    possible_paths = [
+        os.path.join(os.getcwd(), 'data', filename),  # From current directory
+        os.path.join(os.getcwd(), filename),          # Directly in current directory
+        os.path.join(script_dir, '..', 'data', filename),  # From script directory
+        os.path.join(script_dir, 'data', filename),   # data/ in script directory
+        os.path.join(os.path.dirname(script_dir), 'data', filename),  # repo root/data/
+        os.path.join('data', filename),               # Relative data/
+        os.path.join('..', 'data', filename),         # Relative ../data/
+    ]
+    
+    # Check each path
+    for path in possible_paths:
+        if os.path.exists(path):
+            print(f"Found data file at: {path}")
+            return path
+    
+    # If we get here, file was not found
+    print(f"Could not find data file: {filename}")
+    print("Searched locations:")
+    for path in possible_paths:
+        print(f"  - {path} (Not found)")
+    
+    return None
+
 def load_conference_data(file_path='TMS2025AI_Excel_02-21-2025.xlsx'):
+    # If no path provided, attempt to find the file
+    if file_path == 'TMS2025AI_Excel_02-21-2025.xlsx':
+        file_path = find_data_file(file_path)
+        if file_path is None:
+            print("Error: Could not find the Excel file. Please provide the file path.")
+            return None
+            
     try:
         df = pd.read_excel(file_path)
         print(f"\nLoading TMS 2025 Conference Data...")
@@ -786,7 +840,213 @@ def display_nvidia_relevant_sessions(df, focus_areas):
             if len(sorted_sessions) > 5:
                 print(f"\n... and {len(sorted_sessions) - 5} more sessions relevant to {product}")
 
-def user_customized_featurizer(df, user_interests, interest_weights=None, min_score=3):
+def visualize_schedule_calendar(df, min_score=0, focus_areas=None, title="Conference Schedule"):
+    """
+    Visualize the schedule as a calendar view with time slots and sessions.
+    
+    Parameters:
+    -----------
+    df : pandas DataFrame
+        DataFrame containing the schedule information with at least Date, Start, End, Location, and Title columns
+    min_score : int, optional
+        Minimum relevance score to include sessions (default: 0, show all sessions)
+    focus_areas : dict, optional
+        Dictionary mapping focus areas to lists of keywords, used for coloring (default: None)
+    title : str, optional
+        Title for the visualization (default: "Conference Schedule")
+        
+    Returns:
+    --------
+    fig : matplotlib Figure
+        The figure containing the calendar visualization
+    """
+    if df is None or df.empty:
+        print("No data available to visualize.")
+        return None
+    
+    # Convert date strings to datetime if needed
+    df['Date'] = pd.to_datetime(df['Date'])
+    
+    # Get unique dates and create a figure with subplots for each day
+    unique_dates = sorted(df['Date'].dt.date.unique())
+    
+    if not unique_dates:
+        print("No valid dates found in the schedule.")
+        return None
+    
+    # Score sessions if focus areas are provided
+    if focus_areas:
+        df['relevance_score'] = df.apply(lambda row: score_session_relevance(row, focus_areas), axis=1)
+        # Filter by minimum score
+        if min_score > 0:
+            df = df[df['relevance_score'] >= min_score].copy()
+    else:
+        # If no focus areas, just include all sessions
+        df['relevance_score'] = 1
+    
+    if df.empty:
+        print(f"No sessions with relevance score >= {min_score} found.")
+        return None
+    
+    # Create a color map for focus areas
+    if focus_areas:
+        focus_area_colors = {}
+        cmap = plt.cm.get_cmap('tab10', len(focus_areas))
+        for i, area in enumerate(focus_areas.keys()):
+            focus_area_colors[area] = cmap(i)
+    
+    # Set up the figure
+    n_days = len(unique_dates)
+    fig, axes = plt.subplots(1, n_days, figsize=(5*n_days, 10), sharey=True)
+    
+    # Handle case of a single day
+    if n_days == 1:
+        axes = [axes]
+    
+    # Reference date for plotting times on the y-axis (using today's date)
+    ref_date = datetime.now().date()
+    
+    # Set y-axis limits (time range)
+    time_min = datetime.combine(ref_date, datetime.strptime('07:00', '%H:%M').time())
+    time_max = datetime.combine(ref_date, datetime.strptime('19:00', '%H:%M').time())
+    
+    # Process each day
+    for i, date in enumerate(unique_dates):
+        ax = axes[i]
+        
+        # Set title and format
+        day_name = datetime.combine(date, datetime.min.time()).strftime('%A')
+        date_str = datetime.combine(date, datetime.min.time()).strftime('%B %d, %Y')
+        ax.set_title(f"{day_name}\n{date_str}")
+        
+        # Configure y-axis (time)
+        hours = mdates.HourLocator(interval=1)
+        hour_fmt = mdates.DateFormatter('%H:%M')
+        ax.yaxis.set_major_locator(hours)
+        ax.yaxis.set_major_formatter(hour_fmt)
+        ax.set_ylim(time_max, time_min)  # Reversed for top-to-bottom
+        
+        # Configure x-axis (rooms)
+        day_data = df[df['Date'].dt.date == date]
+        if day_data.empty:
+            continue
+            
+        # Group by location (room)
+        room_groups = day_data.groupby('Location')
+        unique_rooms = sorted(day_data['Location'].unique())
+        
+        # Set x-axis ticks for rooms
+        ax.set_xlim(-0.5, len(unique_rooms) - 0.5)
+        ax.set_xticks(range(len(unique_rooms)))
+        ax.set_xticklabels(unique_rooms, rotation=45, ha='right')
+        
+        # Add horizontal grid lines
+        ax.grid(axis='y', linestyle='--', alpha=0.7)
+        
+        # Plot each session as a rectangle
+        legend_handles = []
+        seen_areas = set()
+        
+        for room_idx, room in enumerate(unique_rooms):
+            room_sessions = day_data[day_data['Location'] == room]
+            
+            for _, session in room_sessions.iterrows():
+                # Parse start and end times and combine with reference date
+                try:
+                    # Handle both string and datetime.time objects
+                    if isinstance(session['Start'], str):
+                        start_time = datetime.combine(ref_date, datetime.strptime(session['Start'], '%H:%M').time())
+                        end_time = datetime.combine(ref_date, datetime.strptime(session['End'], '%H:%M').time())
+                    else:
+                        start_time = datetime.combine(ref_date, session['Start'])
+                        end_time = datetime.combine(ref_date, session['End'])
+                except (ValueError, TypeError) as e:
+                    print(f"Error parsing time: {e} - Start: {session['Start']}, End: {session['End']}")
+                    continue  # Skip this session
+                
+                # Calculate duration in hours
+                duration = (end_time - start_time).total_seconds() / 3600
+                
+                # Create rectangle properties
+                rect_x = room_idx - 0.4
+                rect_width = 0.8
+                rect_y = end_time  # Bottom of rectangle (y-axis is reversed)
+                rect_height = duration
+                
+                # Determine color based on focus areas
+                if focus_areas:
+                    session_text = ' '.join([str(val) for val in session.values if isinstance(val, str)])
+                    matching_areas = []
+                    for area, keywords in focus_areas.items():
+                        if any(keyword.lower() in session_text.lower() for keyword in keywords):
+                            matching_areas.append(area)
+                    
+                    if matching_areas:
+                        # Use color of the first matching area
+                        primary_area = matching_areas[0]
+                        color = focus_area_colors[primary_area]
+                        alpha = min(0.4 + 0.1 * session['relevance_score'], 0.9)  # Higher score = more opaque
+                        
+                        # Add to legend if not already seen
+                        if primary_area not in seen_areas:
+                            seen_areas.add(primary_area)
+                            patch = mpatches.Patch(color=color, alpha=alpha, label=primary_area)
+                            legend_handles.append(patch)
+                    else:
+                        color = 'gray'
+                        alpha = 0.3
+                else:
+                    color = 'steelblue'
+                    alpha = 0.7
+                
+                # Create rectangle
+                rect = plt.Rectangle(
+                    (rect_x, rect_y), rect_width, rect_height,
+                    facecolor=color, alpha=alpha, edgecolor='black', linewidth=1
+                )
+                ax.add_patch(rect)
+                
+                # Add session title text
+                title_text = session['Title']
+                if len(title_text) > 30:
+                    title_text = title_text[:27] + '...'
+                
+                # Add score if focus areas provided
+                if focus_areas:
+                    title_text += f" ({session['relevance_score']})"
+                
+                # Position the text in the middle of the rectangle
+                text_y = start_time + timedelta(hours=duration/2)
+                
+                ax.text(
+                    rect_x + rect_width/2, 
+                    text_y,
+                    title_text,
+                    horizontalalignment='center',
+                    verticalalignment='center',
+                    fontsize=8,
+                    color='black',
+                    wrap=True
+                )
+    
+    # Add legend if using focus areas
+    if focus_areas and legend_handles:
+        fig.legend(handles=legend_handles, loc='lower center', ncol=min(len(legend_handles), 3), bbox_to_anchor=(0.5, 0))
+    
+    # Adjust layout
+    plt.tight_layout()
+    if focus_areas:
+        plt.subplots_adjust(bottom=0.15)  # Make room for legend
+    
+    # Add overall title
+    fig.suptitle(title, fontsize=16, y=0.98)
+    
+    # Show the plot
+    plt.show()
+    
+    return fig
+
+def user_customized_featurizer(df, user_interests, interest_weights=None, min_score=3, show_calendar=True):
     """
     Generate a personalized schedule based on user-defined interests and optional weights.
     
@@ -803,6 +1063,8 @@ def user_customized_featurizer(df, user_interests, interest_weights=None, min_sc
         Example: {'Additive Manufacturing': 2.0, 'Machine Learning': 1.5}
     min_score : int, optional
         Minimum relevance score to include a session (default: 3)
+    show_calendar : bool, optional
+        Whether to display a calendar visualization (default: True)
         
     Returns:
     --------
@@ -914,6 +1176,13 @@ def user_customized_featurizer(df, user_interests, interest_weights=None, min_sc
                 print(f"Description: {description}")
             
             print("-" * 40)
+    
+    # Display calendar visualization if requested
+    if show_calendar:
+        print("\nGenerating calendar visualization...")
+        visualize_schedule_calendar(relevant_sessions, min_score=min_score, 
+                                    focus_areas=user_interests, 
+                                    title=f"Your Personalized TMS Schedule (min score: {min_score})")
     
     # Return the DataFrame for further processing if needed
     return relevant_sessions
